@@ -1,0 +1,8 @@
+name = "my-portfolio"
+compatibility_date = "2026-08-10"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "myweb"
+database_id = "f63338e1-8c97-42a3-b0c2-f830bf017e1e"
