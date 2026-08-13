@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F6F2;
+    --ink: #16191A;
+    --muted: #5B6360;
+    --line: #D9DCD4;
+    --accent: #3A6B62;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 96px 24px 64px;
+  }
+
+  .eyebrow {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 20px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2.2rem, 6vw, 3.2rem);
+    line-height: 1.1;
+    margin: 0 0 4px;
+  }
+
+  .title {
+    font-size: 1.05rem;
+    color: var(--accent);
+    margin: 0 0 32px;
+  }
+
+  .bio {
+    font-size: 1.05rem;
+    color: var(--ink);
+    max-width: 52ch;
+    margin: 0 0 40px;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+  }
+
+  .links a {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .links a:hover,
+  .links a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .links a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .state {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .links a { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<main id="content">
+  <p class="state">Loading…</p>
+</main>
+
+<script>
+  async function loadProfile() {
+    const content = document.getElementById('content');
+    try {
+      const response = await fetch('data.json');
+      if (!response.ok) {
+        throw new Error('Network response was not ok (' + response.status + ')');
+      }
+      const data = await response.json();
+      renderProfile(data);
+    } catch (err) {
+      content.innerHTML = '<p class="state">Could not load profile data. Make sure data.json is in the same folder as this page.</p>';
+      console.error('Failed to load data.json:', err);
+    }
+  }
+
+  function renderProfile(data) {
+    const content = document.getElementById('content');
+
+    const linksHtml = (data.links || [])
+      .map(function (link) {
+        return '<li><a href="' + escapeHtml(link.url) + '">' + escapeHtml(link.label) + '</a></li>';
+      })
+      .join('');
+
+    content.innerHTML =
+      '<p class="eyebrow">' + escapeHtml(data.location || '') + '</p>' +
+      '<h1>' + escapeHtml(data.name || '') + '</h1>' +
+      '<p class="title">' + escapeHtml(data.title || '') + '</p>' +
+      '<p class="bio">' + escapeHtml(data.bio || '') + '</p>' +
+      '<ul class="links">' + linksHtml + '</ul>';
+  }
+
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  loadProfile();
+</script>
+
+</body>
+</html>
